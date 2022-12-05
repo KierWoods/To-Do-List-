@@ -1,6 +1,8 @@
 
 # Real world example of a to_do list.
 
+from functions import getTasks, writeTask
+
 print("Welcome to your TO DO LIST\n") 
 count = 0
 
@@ -16,8 +18,7 @@ Exit- Exit\n""").lower().strip(" ")
     if start.startswith("add"):
         to_do = start[4:]
 
-        with open("tasks.txt", "r") as file:
-            to_do_list = file.readlines()
+        to_do_list = getTasks()
 
         to_do_list.append(to_do + "\n")
 
@@ -25,9 +26,9 @@ Exit- Exit\n""").lower().strip(" ")
             file.writelines(task for task in to_do_list)
 
     elif "show" in start:
-        with open("tasks.txt", "r") as file:
-            to_do_list = file.readlines()
 
+        to_do_list = getTasks()
+        
         to_do_list = [task.replace("\n", "") for task in to_do_list]
 
         for i, task in enumerate(to_do_list):
@@ -36,11 +37,10 @@ Exit- Exit\n""").lower().strip(" ")
     
     elif start.startswith("edit"):
         try:
-            with open("tasks.txt", "r") as file:
-                to_do_list = file.readlines()
+            to_do_list = getTasks()
 
             to_do_list = [task.replace("\n", "") for task in to_do_list]
-
+            print("To Do List\n")
             for i, task in enumerate(to_do_list):
                 task = task.title() 
                 print(f"{i+1}. {task}")
@@ -49,20 +49,18 @@ Exit- Exit\n""").lower().strip(" ")
             edited_task = input("Add new Task Description: ")
             to_do_list.__setitem__(task_no, edited_task)
             print(f"Task Number {task_no} has been edited.")
-            with open ("tasks.txt", "w") as file:
-                file.writelines(task + "\n" for task in to_do_list)
+            writeTask("tasks.txt", to_do_list)
         except IndexError: 
             print("Please select the number of the task you wish to edit. i.e edit 2")
             continue
     
     elif "complete" in start:
         try:
-            with open("tasks.txt", "r") as file:
-                to_do_list = file.readlines()
+            to_do_list = getTasks()
             
 
             to_do_list = [task.replace("\n", "") for task in to_do_list]
-
+            
             for i, task in enumerate(to_do_list):
                 task = task.title()
                 print(f"{i+1}. {task}")
@@ -70,8 +68,7 @@ Exit- Exit\n""").lower().strip(" ")
             task_no = task_index -1
             to_do_list.pop(task_no)
             print(f"Task {task_index} has been Marked as Complete.")
-            with open("tasks.txt", "w") as file:
-                file.writelines(task + "\n" for task in to_do_list)
+            writeTask("tasks.txt", to_do_list)
         except ValueError:
             print("Please select the number of the task you wish to mark as complete. i.e complete 2")
             continue
